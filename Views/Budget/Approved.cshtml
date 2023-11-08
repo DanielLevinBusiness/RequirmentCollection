@@ -1,0 +1,268 @@
+﻿<div id="userViewContainer">
+    <div class="row">
+        <select class="form-control userSelectCategory" id="userCategorySelect" onchange="CatagorySelect()">
+            <option> Select </option>
+            <option> Si Package </option>
+            <option> Product Board </option>
+            <option> Eng Board </option>
+        </select>
+    </div>
+    <div class="row">
+        <div class="col-auto" id="RequestedInsert">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-auto">
+            <button class="btn btn-primary SubmitButton" type="button" id="Btn" onclick="Submit()"> Submit </button>
+        </div>
+    </div>
+</div>
+
+
+@section scripts {
+
+    <script type="text/javascript">
+
+        function CatagorySelect() 
+        {
+
+            let Catagory = $('#userCategorySelect').val();
+
+            $("#RequestedInsert").children().remove();
+
+            switch (Catagory) {
+            
+                case 'Si Package':
+
+                    $("#RequestedInsert").append(SiTable());
+                    AddTable('/Budget/GetSiBudgetItem', "BudgetItemsSI", 12, "#Table", "InsertData", "", "");
+
+                    break;
+                case 'Product Board':
+
+                    $("#RequestedInsert").append(ProTable());
+                    AddTable('/Budget/GetProBudgetItem', "BudgetItemsPRO", 8, "#Table", "InsertData", "", "");
+
+                    break;
+                case 'Eng Board':
+
+                    $("#RequestedInsert").append(EngTable());
+                    AddTable('/Budget/GetEngBudgetItem', "BudgetItemsENG", 9, "#Table", "InsertData", "", "");
+
+                    break;
+
+            }
+
+        }
+
+        function SiTable () 
+        {
+            return (`
+                                        <table class="table" id="Table">
+                                            <tr>
+                                                <th class="th">Project</th>
+                                                            <th class="th">Requestor</th>
+                                                            <th class="th">P/N</th>
+                                        <th class="th">Package Number</th>
+                                        <th class="th">Group And Team</th>
+                                                                                    <th class="th">Quantity for pre-BU</th>
+                                                        <th class="th">Quantity for post-BU</th>
+                                        <th class="th">Item Justification</th>
+                                        <th class="th">Mold Type</th>
+                                        <th class="th">Blind or Tested</th>
+                                        <th class="th">SiFLV</th>
+                                        <th class="th">Mini SKU</th>
+                                        <th class="th">Step</th>
+                                                                                    <th class="th">Approved Qty pre-BU</th>
+                                                                                            <th class="th">Approved Qty post-BU</th>
+                                                                                            <th class="th">APO#</th>
+                                                                                                    <th class="th">ETA</th>
+                                            </tr>
+                            </table>
+                            `);
+        }
+
+        function EngTable () {
+        
+            return(`
+                                    <h2>Eng Boards</h2>
+                            <table class="table" id="Table">
+                                <tr>
+                                                                                    <th class="th">Project</th>
+                                                                                            <th class="th">Requestor</th>
+                                                                                            <th class="th">P/N</th>
+                                                                                            <th class="th">Board Name</th>
+                                                                                            <th class="th">Group And Team</th>
+                                                                                    <th class="th">Quantity for pre-BU</th>
+                                                        <th class="th">Quantity for post-BU</th>
+                                                                            <th class="th">Item Justification</th>
+                                                                            <th class="th">Setup</th>
+                                                                            <th class="th">Si Step</th>
+                                                                                    <th class="th">Approved Qty pre-BU</th>
+                                                                                            <th class="th">Approved Qty post-BU</th>
+                                                                                            <th class="th">APO#</th>
+                                                                                                    <th class="th">ETA</th>
+                                                    </tr>
+                            </table>
+                            `);
+
+
+        }
+
+        function ProTable () {
+        
+            return(`
+                            <h3>Product Boards</h3>
+                                    <table class="table" id="Table">
+                                <tr>
+                                                                                             <th class="th">Project</th>
+                                                                    <th class="th">Requestor</th>
+                                                                    <th class="th">P/N</th>
+                                                                                    <th class="th">Form Factor</th>
+                                                                                    <th class="th">Group And Team</th>
+                                                                                    <th class="th">Quantity for pre-BU</th>
+                                                        <th class="th">Quantity for post-BU</th>
+                                                <th class="th">Item Justification</th>
+                                                                                    <th class="th">Skew</th>
+                                                                                    <th class="th">Approved Qty pre-BU</th>
+                                                                                            <th class="th">Approved Qty post-BU</th>
+                                                                                            <th class="th">APO#</th>
+                                                                                                    <th class="th">ETA</th>
+                                                            </tr>
+                            </table>
+                            `);
+
+        }
+
+        function AddTable(Get, DBname, LoopInt, ShoppingCartName, InsertDataName, SqlFilter, SecondFilterSelect) {
+
+            $.get(Get, { DBname: DBname, Requirment: SqlFilter + SecondFilterSelect }, function (BudgetItem) {
+
+                $(ShoppingCartName).append(`<tr id="${InsertDataName}">`);
+
+                var i = 0;
+                var FirstLoop = true;
+
+                $.each(BudgetItem, function (index, value) {
+
+                    $("#" + InsertDataName).append(`<td class="td">${value}</td>`);
+
+                    if (i != 0 && i % LoopInt == 0 && FirstLoop) {
+
+                        $("#" + InsertDataName).append(Quantity());
+                        $(ShoppingCartName).append(`</tr>`);
+                        const remove = document.getElementById(InsertDataName);
+                        remove.removeAttribute('id');
+                        $(ShoppingCartName).append(`<tr id="${InsertDataName}">`);
+                        FirstLoop = false;
+                        i = 0;
+                    }
+
+                    if (i != 0 && i % (LoopInt + 1) == 0 && !FirstLoop) {
+                        
+                        $("#" + InsertDataName).append(Quantity());
+                        $(ShoppingCartName).append(`</tr>`);
+                        const remove = document.getElementById(InsertDataName);
+                        remove.removeAttribute('id');
+                        $(ShoppingCartName).append(`<tr id="${InsertDataName}">`);
+                    }
+
+                    i++;
+
+                });
+            });
+        }
+
+        var QuantityColum = 0;
+
+        function Quantity() 
+        {
+            QuantityColum++;
+            return (`<td class="td">
+                                <input class="form-control Input" id="QuantityInput${QuantityColum}" />
+                                </td>
+                                <td class="td">
+                                        <input class="form-control Input" id="QuantityInputOther${QuantityColum}" />
+                                </td>
+                                <td class="td">
+                                        <input class="form-control Input" id="APO${QuantityColum}" />
+                                </td>
+                                <td class="td">
+                                        <input class="form-control Input" id="ETA${QuantityColum}" />
+                                </td>
+                                `);
+        
+        }
+
+        function Submit () 
+        {
+            var selection = $('#userCategorySelect').val();
+
+            switch (selection) {
+            
+                case 'Si Package':
+                    AddNew(GetTableData(), "BudgetItemsSIApp");
+                    break;
+                case 'Product Board':
+                    AddNew(GetTableData(), "BudgetItemsPROApp");
+                    break;
+                case 'Eng Board':
+                    AddNew(GetTableData(), "BudgetItemsENGApp");
+                    break;
+
+            }
+        }
+
+        function GetTableData () 
+        {
+
+            var Table = document.getElementById('Table');
+
+            QuantityColum = 1;
+
+            var result = "";
+
+            for (i = 1; i < Table.rows.length - 1; i++) {
+
+                var objCells = Table.rows.item(i).cells;
+
+                result += "'";
+
+                for (var j = 0; j < objCells.length; j++) {
+
+                    if (j < objCells.length - 4)//-4 for the input data colums
+                        result += objCells.item(j).innerHTML + "','";
+                    else if (j == objCells.length - 4){//-4 for the input data colums
+
+                        result += $("#QuantityInput" + QuantityColum).val();
+                        result += "','";
+                        result += $("#QuantityInputOther" + QuantityColum).val();
+                        result += "','";
+                        result += $("#APO" + QuantityColum).val();
+                        result += "','";
+                        result += $("#ETA" + QuantityColum).val();
+                        result += "'";
+                        QuantityColum++;
+                        break;
+
+                    }
+                }
+
+                result += "),(";
+            }
+            return result;
+        }
+
+        function AddNew (Value, DB) 
+        {
+        
+             $.get('/Budget/AddNewValueToDB', { newValue: Value, table: DB, submit: true }, function (data) {
+                alert("Submit succesful");
+                    location.reload();
+                });
+        
+        }
+
+    </script>
+
+}

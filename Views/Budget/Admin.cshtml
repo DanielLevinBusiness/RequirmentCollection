@@ -1,0 +1,485 @@
+﻿
+<div id="adminViewContainer">
+    <div class="row">
+        <div class="col-md">
+            <a class="btn btn-primary ExcelButton" asp-area="" asp-controller="Budget" asp-action="ExportToXcl">Export to excel</a>
+        </div>
+        <div class="col-md">
+                <div>
+                    <div class="cold-md">
+                    <h2> Open For Submission</h2>
+                </div>
+                <div class="cold-md">
+                    <select class="form-control adminSelectSub" id="adminSelectSub" onchange="SubSelect()">
+                    </select>
+                </div>
+                </div>
+            </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-sm-4">
+            <h3> Add New Eng Board</h3>
+            <div class="row">
+                    <div class="col-sm-2">
+                        <p> <b> Project Name </b> </p>
+                    </div>
+                    <div class="col-md-3">
+                        <input class="form-control ProjAddOrEdit" id="EngProjectNameEditOrAdd" />
+                    </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2">
+                    <p> <b> Setup </b> </p>
+                </div>
+                <div class="col-md-3">
+                    <input class="form-control EngAddOrEdit" id="EngSetupEditOrAdd" />
+                </div>
+            </div>
+                <div class="row">
+                    <div class="col-sm-2">
+                        <p> <b> Board Name </b> </p>
+                    </div>
+                    <div class="col-md-3">
+                        <input class="form-control EngAddOrEdit" onclick="Popup()" id="EngBoardNameEditOrAdd" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-2">
+                        <p> <b> Part Number </b> </p>
+                    </div>
+                    <div class="col-md-3">
+                    <input class="form-control EngAddOrEdit" id="EngPartNumberEditOrAdd" />
+                    </div>
+                </div>
+            <div class="row">
+                <div class="col-sm-2">
+                    <p> <b> Price Per Unit </b> </p>
+                </div>
+                <div class="col-md-3">
+                    <input class="form-control EngAddOrEdit" id="EngPriceEditOrAdd" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2">
+                    <p> <b> Comment </b> </p>
+                </div>
+                <div class="col-md-3">
+                    <input class="form-control EngAddOrEdit" id="EngCommentEditOrAdd" />
+                </div>
+            </div>
+                <div class="col-md-2">
+                <button class="btn btn-primary EngButton" type="button" id="EngBtn"> Add </button>
+                </div>
+            </div>
+        <div class="col-sm-4">
+            <h3> Add New Product Board</h3>
+            <div class="row">
+                <div class="col-sm-2">
+                    <p> <b> Project Name </b> </p>
+                </div>
+                <div class="col-md-3">
+                    <input class="form-control ProductAddOrEdit" id="ProductProjectNameEditOrAdd" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2">
+                    <p> <b> Form Factor </b> </p>
+                </div>
+                <div class="col-md-3">
+                    <input class="form-control ProductAddOrEdit" id="ProductFormFactorEditOrAdd" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2">
+                    <p> <b> Skew </b> </p>
+                </div>
+                <div class="col-md-3">
+                    <input class="form-control ProductAddOrEdit" id="ProductSkewEditOrAdd" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2">
+                    <p> <b> Part Number </b> </p>
+                </div>
+                <div class="col-md-3">
+                    <input class="form-control ProductAddOrEdit" id="ProductPartNumberEditOrAdd" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2">
+                    <p> <b> Price Per Unit </b> </p>
+                </div>
+                <div class="col-md-3">
+                    <input class="form-control ProductAddOrEdit" id="ProductPriceEditOrAdd" />
+                </div>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-primary ProductButton" type="button" id="ProductButton"> Add </button>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <h3> Add New Si Package</h3>
+            <div class="row">
+                <div class="col-sm-2">
+                    <p> <b> Project Name </b> </p>
+                </div>
+                <div class="col-md-3">
+                    <input class="form-control SiAddOrEdit" id="SiProjectNameEditOrAdd" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2">
+                    <p> <b> Package Number </b> </p>
+                </div>
+                <div class="col-md-3">
+                    <input class="form-control SiAddOrEdit" id="SiPackageNumberEditOrAdd" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2">
+                    <p> <b> Si FLV </b> </p>
+                </div>
+                <div class="col-md-3">
+                    <input class="form-control SiAddOrEdit" id="SiSiFLVEditOrAdd" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2">
+                    <p> <b> Part Number </b> </p>
+                </div>
+                <div class="col-md-3">
+                    <input class="form-control SiAddOrEdit" id="SiPartNumberEditOrAdd" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2">
+                    <p> <b> Price Per Unit </b> </p>
+                </div>
+                <div class="col-md-3">
+                    <input class="form-control SiAddOrEdit" id="SiPriceEditOrAdd" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2">
+                    <p> <b> Comment </b> </p>
+                </div>
+                <div class="col-md-3">
+                    <input class="form-control SiAddOrEdit" id="SiCommentEditOrAdd" />
+                </div>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-primary SiButton" type="button" id="SiButton"> Add </button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3">
+            <h3> Add New Requestor</h3>
+            <div class="row">
+                <div class="col-sm-2">
+                    <p> <b> First Name </b> </p>
+                </div>
+                <div class="col-md-3">
+                    <input class="form-control RequestorAddOrEdit" id="RequestorFirstNameEditOrAdd" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2">
+                    <p> <b> Last Name </b> </p>
+                </div>
+                <div class="col-md-3">
+                    <input class="form-control RequestorAddOrEdit" id="RequestorlastNameEditOrAdd" />
+                </div>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-primary RequestorButton" type="button" id="RequestorBtn"> Add </button>
+            </div>
+            </div>
+            <div class="col-sm-3">
+            <h3> Add New Group And Team</h3>
+            <div class="row">
+                <div class="col-sm-2">
+                    <p> <b> Group Name </b> </p>
+                </div>
+                <div class="col-md-3">
+                    <input class="form-control GroupAddOrEdit" id="GroupNameEditOrAdd" />
+                </div>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-primary GroupButton" type="button" id="GroupBtn"> Add </button>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts {
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            //Load all selections:
+            $.get('/Budget/SubmitStatusGet', {}, function (status) {
+                
+                    $("#adminSelectSub").children().remove();
+
+                if (status == "False") {
+
+                    $("#adminSelectSub").append(`
+                                <option> Closed </option>
+                                <option> Open </option>`)
+
+                }else
+                {
+
+                    $("#adminSelectSub").append(`
+                                        <option> Open </option>
+                                        <option> Closed </option>`)
+                
+                }
+            });
+        });
+
+        function SubSelect ()
+        {
+
+            let selection = $('#adminSelectSub').val();
+
+            if (selection == "Open") 
+            {
+
+                $.get('/Budget/SubmitStatusSet', { IsClosed: false }, function (data) {
+                    alert("User Submission Open");
+                });
+
+            } else 
+            {
+
+                $.get('/Budget/SubmitStatusSet', { IsClosed: true }, function (data) {
+                    alert("User Submission Closed");
+                });
+            
+            }
+
+        }
+
+        $('.EngButton').click(function () {
+
+            let ProjectNameInput = $('#EngProjectNameEditOrAdd').val();
+            let BoardNameInput = $('#EngBoardNameEditOrAdd').val();
+            let SetupInput = $('#EngSetupEditOrAdd').val();
+            let PartNumberInput = $('#EngPartNumberEditOrAdd').val();
+            let PriceInput = $('#EngPriceEditOrAdd').val();
+            let CommentInput = $('#EngCommentEditOrAdd').val();
+
+            if (ProjectNameInput == '' || ProjectNameInput == null) {
+                alert('Please fill Project Name');
+                return;
+            }
+            else if (BoardNameInput == '' || BoardNameInput == null) {
+                alert('Please fill Board Name');
+                return;
+            }
+            else if (SetupInput == '' || SetupInput == null) {
+                alert('Please fill Setup');
+                return;
+            }
+            else if (PartNumberInput == '' || PartNumberInput == null) {
+                alert('Please fill Part Number');
+                return;
+            }
+            else if (PriceInput == '' || PriceInput == null) {
+                alert('Please fill Price Per Unit');
+                return;
+            }
+            else
+            {
+                //Add new value to DB
+                let ProjInput = "'";
+                ProjInput += ProjectNameInput
+                ProjInput += "','";
+                ProjInput += BoardNameInput;
+                ProjInput += "','";
+                ProjInput += SetupInput
+                ProjInput += "','";
+                ProjInput += PartNumberInput
+                ProjInput += "','";
+                ProjInput += PriceInput
+                ProjInput += "','";
+                ProjInput += CommentInput
+                ProjInput += "'";
+
+                $.get('/Budget/AddNewValueToDB', { newValue: ProjInput, table: 'EngBoards', submit: false }, function (data) {
+                    alert("Added " + ProjectNameInput + " " + SetupInput + " " + BoardNameInput);
+                });
+            }
+            //Clear selection:
+            location.reload();
+        });
+
+        $('.ProductButton').click(function () {
+
+            let ProjectNameInput = $('#ProductProjectNameEditOrAdd').val();
+            let FormFactorInput = $('#ProductFormFactorEditOrAdd').val();
+            let SkewInput = $('#ProductSkewEditOrAdd').val();
+            let PartNumberInput = $('#ProductPartNumberEditOrAdd').val();
+            let PriceInput = $('#ProductPriceEditOrAdd').val();
+
+            if (ProjectNameInput == '' || ProjectNameInput == null) {
+                alert('Please fill Project Name');
+                return;
+            }
+            else if (FormFactorInput == '' || FormFactorInput == null) {
+                alert('Please fill Form Factor');
+                return;
+            }
+            else if (SkewInput == '' || SkewInput == null) {
+                alert('Please fill Skew');
+                return;
+            }
+            else if (PartNumberInput == '' || PartNumberInput == null) {
+                alert('Please fill Part Number');
+                return;
+            }
+            else if (PriceInput == '' || PriceInput == null) {
+                alert('Please fill Price Per Unit');
+                return;
+            }
+            else {
+                //Add new value to DB
+                let ProjInput = "'";
+                ProjInput += ProjectNameInput
+                ProjInput += "','";
+                ProjInput += FormFactorInput;
+                ProjInput += "','";
+                ProjInput += SkewInput
+                ProjInput += "','";
+                ProjInput += PartNumberInput
+                ProjInput += "','";
+                ProjInput += PriceInput
+                ProjInput += "'";
+
+                $.get('/Budget/AddNewValueToDB', { newValue: ProjInput, table: 'ProductBoards', submit: false }, function (data) {
+                    alert("Added " + ProjectNameInput + " " + FormFactorInput + " " + SkewInput);
+                });
+            }
+            //Clear selection:
+            location.reload();
+        });
+
+        $('.SiButton').click(function () {
+
+            let ProjectNameInput = $('#SiProjectNameEditOrAdd').val();
+            let PackageNumberInput = $('#SiPackageNumberEditOrAdd').val();
+            let MoldTypeInput = $('#SiMoldTypeEditOrAdd').val();
+            let BlindInput = $('#SiBlindEditOrAdd').val();
+            let PartNumberInput = $('#SiPartNumberEditOrAdd').val();
+            let PriceInput = $('#SiPriceEditOrAdd').val();
+            let SiFLVInput = $('#SiSiFLVEditOrAdd').val();
+            let CommentInput = $('#SiCommentEditOrAdd').val();
+
+            if (ProjectNameInput == '' || ProjectNameInput == null) {
+                alert('Please fill Project Name');
+                return;
+            }
+            else if (PackageNumberInput == '' || PackageNumberInput == null) {
+                alert('Please fill Package Number');
+                return;
+            }
+            else if (PartNumberInput == '' || PartNumberInput == null) {
+                alert('Please fill Part Number');
+                return;
+            }
+            else if (PriceInput == '' || PriceInput == null) {
+                alert('Please fill Price Per Unit');
+                return;
+            }
+            else if (SiFLVInput == '' || SiFLVInput == null) {
+                alert('Please fill Si FLV');
+                return;
+            }
+            else
+            {
+                //Add new value to DB
+                let ProjInput = "'";
+                ProjInput += ProjectNameInput
+                ProjInput += "','";
+                ProjInput += PackageNumberInput;
+                ProjInput += "','";
+                ProjInput += PartNumberInput;
+                ProjInput += "','";
+                ProjInput += PriceInput;
+                ProjInput += "','";
+                ProjInput += SiFLVInput;
+                ProjInput += "','";
+                ProjInput += CommentInput;
+                ProjInput += "'";
+
+                $.get('/Budget/AddNewValueToDB', { newValue: ProjInput, table: 'SiPackage', submit: false }, function (data) {
+                    alert("Added " + ProjectNameInput + " " + PackageNumberInput + " " + SiFLVInput);
+                });
+            }
+            //Clear selection:
+            location.reload();
+        });
+
+        $('.RequestorButton').click(function () {
+
+            let RequestorFirstName = $('#RequestorFirstNameEditOrAdd').val();
+            let RequestorlastName = $('#RequestorlastNameEditOrAdd').val();
+
+            if (RequestorFirstName == '' || RequestorFirstName == null) {
+                alert('Please fill First Name');
+                return;
+            }
+            else if (RequestorlastName == '' || RequestorlastName == null) {
+                alert('Please fill Last Name');
+                return;
+            }
+            else {
+                //Add new value to DB
+                let ReqInput = "'";
+                ReqInput += RequestorFirstName;
+                ReqInput += "','";
+                ReqInput += RequestorlastName;
+                ReqInput += "'";
+
+                $.get('/Budget/AddNewValueToDB', { newValue: ReqInput, table: 'Requestors', submit: false }, function (data) {
+                    alert("Added " + RequestorFirstName + " " + RequestorlastName);
+                });
+                };
+            
+            //Clear selection:
+            location.reload();
+        });
+
+        $('.GroupButton').click(function () {
+
+            let GroupName = $('#GroupNameEditOrAdd').val();
+
+            if (GroupName == '' || GroupName == null) {
+                alert('Please fill Name');
+                return;
+            }
+            else {
+                //Add new value to DB
+                let ReqInput = "'";
+                ReqInput += GroupName;
+                ReqInput += "'";
+
+                $.get('/Budget/AddNewValueToDB', { newValue: ReqInput, table: 'GroupAndTeams', submit: false }, function (data) {
+                    alert("Added " + GroupName);
+                });
+            }
+            //Clear selection:
+            location.reload();
+        });
+
+        function Popup() 
+        {
+            
+            alert("Dont use special characters like \"\" or ()");
+
+        }
+
+    </script>
+}

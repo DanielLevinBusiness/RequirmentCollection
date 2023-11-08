@@ -1,0 +1,1014 @@
+﻿
+<div id="userViewContainer">
+    <div class="row">
+    <div class="col-sm">
+    <div class="row">
+        <div class="col-auto">
+            <p> <b> Category </b> </p>
+        </div>
+        <div class="col-auto">
+            <select class="form-control userSelectCategory" id="userCategorySelect" onchange="CatagorySelect()"> 
+                <option> Select </option>
+                <option> Si Package </option>
+                <option> Product Board </option>
+                <option> Eng Board </option>
+            </select>
+        </div>
+    </div>
+    <br />
+    <!-- For category -->
+    <div class="row">
+        <div class="col-auto">
+            <p> <b> Project Name </b> </p>
+        </div>
+        <div class="col-auto">
+            <select class="form-control userSelectProj" id="userProjectNameSelect" onchange="ProjectSelect()"> <option> Select </option> </select>
+        </div>
+    </div>
+    <br />
+    <div id="InsertNew">
+    <!-- For category -->
+    </div>
+    <div>
+    <!-- For category -->
+    <div class="row">
+        <div class="col-auto">
+            <p> <b> Cost Per Unit </b> </p>
+        </div>
+        <div class="col-auto">
+            <select class="form-control userSelectPrice" disabled id="userPriceEditOrAdd"> <option> --- </option> </select>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-auto">
+            <p> <b> Customer </b> </p>
+        </div>
+        <div class="col-auto">
+            <select class="form-control userSelectReq" id="userRequestorSelect"> <option> Select </option> </select>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-auto">
+            <p> <b> Group And Team </b> </p>
+        </div>
+        <div class="col-auto">
+                <select class="form-control userSelectGroup" id="userGroupSelect"> <option> Select </option> </select>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-auto">
+            <p> <b> Quantity for pre-BU </b> </p>
+        </div>
+        <div class="col-auto">
+            <input class="form-control userAddOrEdit" id="userQuantityEditOrAdd" />
+        </div>
+    </div>
+
+                <br />
+                <div class="row">
+                    <div class="col-auto">
+                        <p> <b> Quantity for post-BU </b> </p>
+                    </div>
+                    <div class="col-auto">
+                        <input class="form-control userAddOrEdit" id="userQuantityOtherEditOrAdd" />
+                    </div>
+                </div>
+                <br />
+    <div class="row">
+        <div class="col-auto">
+            <p> <b> Justification </b> </p>
+        </div>
+        <div class="col-auto">
+            <input class="form-control userAddOrEdit" id="userItemJustificationEditOrAdd" />
+        </div>
+    </div>
+    <div id="justification"></div>
+                <br/>
+    <div class="col-auto">
+        <button class="btn btn-primary userAddButton" type="button" id="userBtn"> Add </button>
+    </div>
+    </div>
+    <br />
+    </div>
+    <div class="col-sm">
+        <img src="/Pictures/White.jpg"
+                     alt=""
+                     width="800px"
+                 height="500px" id="ImageInsert">
+    </div>
+    <div>
+    <h3> Shopping Cart </h3>
+    <br />
+    <h2>Eng Boards</h2>
+    <table class="table" id="userShoppingCartENG">
+        <tr>
+                                                    <th class="th">Project</th>
+                                                            <th class="th">Setup</th>
+                                            <th class="th">Board Name</th>
+                                            <th class="th">Setup</th>
+                                            <th class="th">Si Step</th>
+                    <th class="th">Quantity for pre-BU</th>
+                    <th class="th">Quantity for post-BU</th>
+                                            <th class="th">Total Price</th>
+                            </tr>
+    </table>
+    <br />
+    <h3>Product Boards</h3>
+    <table class="table" id="userShoppingCartPRO">
+        <tr>
+                                                            <th class="th">Project</th>
+                                                            <th class="th">Form Factor</th>
+                                                            <th class="th">Skew</th>
+                    <th class="th">Quantity for pre-BU</th>
+                    <th class="th">Quantity for post-BU</th>
+                                                            <th class="th">Total Price</th>
+                                    </tr>
+    </table>
+    <br />
+    <h3>Si packages</h3>
+                <table class="table" id="userShoppingCartSI">
+                    <tr>
+                        <th class="th">Project</th>
+                        <th class="th">Package Number</th>
+                        <th class="th">Mold Type</th>
+                        <th class="th">Blind or Tested</th>
+                        <th class="th">SiFLV</th>
+                        <th class="th">Mini SKU</th>
+                        <th class="th">Step</th>
+                    <th class="th">Quantity for pre-BU</th>
+                    <th class="th">Quantity for post-BU</th>
+                        <th class="th">Total Price</th>
+                        
+                    </tr>
+    </table>
+   
+    <br />
+    <div class="row" id="TotalPriceNew">
+                    <h3 class="col-sm-2">Total Cost: </h3>
+                    <h3 class ="col-sm-2" id="TotalPriceOld"></h3>
+    </div>
+    <div class="col-md-2">
+        <button class="btn btn-primary userSubmitButton" type="button" id="userBtn"> Submit </button>
+    </div>
+    <br />
+    </div>
+    </div>
+    </div>
+
+@section scripts {
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            //Load all selections:
+            $.get('/Budget/SubmitStatusGet', {}, function (status) {
+                if (status == "False") 
+                {
+
+                    $("#userViewContainer").children().remove();
+                    $("#userViewContainer").append(`<h2> Submission Closed </h2>`)
+                
+                }
+            });
+
+            $.get('/Budget/GetRequestores', {}, function (Requestores) {
+                $.each(Requestores, function (index, value) {
+                    $("#userRequestorSelect").append(`<option value='${value}'>${value}</option>`);
+                });
+            });
+
+            $.get('/Budget/GetGroupAndTeam', {}, function (Group) {
+                $.each(Group, function (index, value) {
+                    $("#userGroupSelect").append(`<option value='${value}'>${value}</option>`);
+                });
+            });
+           
+        });
+
+        function CatagorySelect ()
+         {
+            $("#InsertNew").children().remove();
+
+            $('#userPriceEditOrAdd').children().remove();
+            
+            $('#userCommentEditOrAdd').children().remove();
+
+            $('#userProjectNameSelect').find('option:not(:first)').remove();
+
+            document.getElementById("ImageInsert").src = "../Pictures/White.jpg";
+
+            let CatagorySelect = $('#userCategorySelect').val();
+
+                if (CatagorySelect == "Si Package") {
+                    
+                        $.get('/Budget/GetProjectNames', { DBname: "SiPackage" }, function (ProjectNames) {
+                            $.each(ProjectNames, function (index, value) {
+                                $("#userProjectNameSelect").append(`<option value='${value}'>${value}</option>`);
+                            });
+                        });
+
+                LoadSi();
+
+                }
+
+                else if (CatagorySelect == "Product Board") {
+
+                        $.get('/Budget/GetProjectNames', { DBname: "ProductBoards" }, function (ProjectNames) {
+                    $.each(ProjectNames, function (index, value) {
+                        $("#userProjectNameSelect").append(`<option value='${value}'>${value}</option>`);
+                    });
+                });
+
+                       LoadPro();
+
+                }
+
+                else if (CatagorySelect == "Eng Board") {
+
+                        $.get('/Budget/GetProjectNames', { DBname: "EngBoards" }, function (ProjectNames) {
+                            $.each(ProjectNames, function (index, value) {
+                                $("#userProjectNameSelect").append(`<option value='${value}'>${value}</option>`);
+                            });
+                        });
+
+                       LoadEng();
+
+                };
+
+                return;
+          };
+
+        function ProjectSelect () {
+            //reset user selection
+            $('#userBoardNameSelect').find('option:not(:first)').remove();
+
+            $('#userSetupSelect').find('option:not(:first)').remove();
+
+            $('#userFormFactorSelect').find('option:not(:first)').remove();
+
+            $('#userSkewSelect').find('option:not(:first)').remove();
+
+            $('#userPriceEditOrAdd').children().remove();
+
+            $('#userCommentEditOrAdd').children().remove();
+
+            $('#userPartEditOrAdd').children().remove();
+
+            $('#userPackageNumberSelect').find('option:not(:first)').remove();
+
+            $('#userSiFLVSelect').find('option:not(:first)').remove();
+
+            $('#userMiniSkewSelect').find('option:not(:first)').remove();
+
+            let selectionProj = $('#userProjectNameSelect').val();
+
+            let CatagorySelect = $('#userCategorySelect').val();
+
+            if (CatagorySelect == "Eng Board")
+            {
+                $.get('/Budget/GetSetup', { ProjectName: selectionProj }, function (Setup) {
+                    $.each(Setup, function (index, value) {
+                        $("#userSetupSelect").append(`<option value='${value}'>${value}</option>`);
+                });
+            });
+            }
+            else if (CatagorySelect == "Product Board")
+            {
+            $.get('/Budget/GetFormfactor', { ProjectName: selectionProj }, function (FormFactor) {
+                $.each(FormFactor, function (index, value) {
+                        $("#userFormFactorSelect").append(`<option value='${value}'>${value}</option>`);
+                });
+            });
+            }
+            else if (CatagorySelect == "Si Package")
+            {
+            $.get('/Budget/GetPackageNumber', { ProjectName: selectionProj }, function (PackageNumber) {
+                $.each(PackageNumber, function (index, value) {
+                        $("#userPackageNumberSelect").append(`<option value='${value}'>${value}</option>`);
+                });
+            });
+            }
+        };
+
+        function BoradNameSelect () {
+            //reset user selection
+
+            $('#userPriceEditOrAdd').children().remove();
+            $('#userCommentEditOrAdd').children().remove();
+            $('#userPartEditOrAdd').children().remove();
+
+            let selectionProj = $('#userProjectNameSelect').val();
+            let selectionName = $('#userBoardNameSelect').val();
+            let selectionSetup = $('#userSetupSelect').val();
+
+
+            $.get('/Budget/GetEngBoardPrice', { ProjectName: selectionProj, BoardName: selectionName, Setup: selectionSetup }, function (BoardPrice) {
+                $.each(BoardPrice, function (index, value) {
+                    $("#userPriceEditOrAdd").append(`<option value='${value}' selected="selected">$${value}</option>`);
+                });
+            });
+
+            $.get('/Budget/GetEngBoardComment', { ProjectName: selectionProj, BoardName: selectionName, Setup: selectionSetup }, function (BoardComment) {
+                $.each(BoardComment, function (index, value) {
+                    $("#userCommentEditOrAdd").append(`<option value='${value}' selected="selected">${value}</option>`);
+                });
+            });
+
+            $.get('/Budget/GetEngPartNumber', { ProjectName: selectionProj, BoardName: selectionName, Setup: selectionSetup }, function (BoardPart) {
+                $.each(BoardPart, function (index, value) {
+                    $("#userPartEditOrAdd").append(`<option value='${value}' selected="selected">${value}</option>`);
+                });
+            });
+            
+        };
+
+        function SetupSelect () {
+
+            $('#userBoardNameSelect').find('option:not(:first)').remove();
+
+            let selectionProj = $('#userProjectNameSelect').val();
+            let selectionSetup = $('#userSetupSelect').val();
+
+            document.getElementById("ImageInsert").src = "../Pictures/" + selectionSetup + ".png";
+
+            $('#userPriceEditOrAdd').children().remove();
+            $('#userCommentEditOrAdd').children().remove();
+            $('#userPartEditOrAdd').children().remove();
+
+            $.get('/Budget/GetBoardNames', { ProjectName: selectionProj, Setup: selectionSetup }, function (Setup) {
+                $.each(Setup, function (index, value) {
+                    $("#userBoardNameSelect").append(`<option value='${value}'>${value}</option>`);
+                });
+            });
+
+        };
+
+        function FormFactorSelect () {
+
+            let selectionProj = $('#userProjectNameSelect').val();
+            let selectionForm = $('#userFormFactorSelect').val();
+
+            $('#userSkewSelect').find('option:not(:first)').remove();
+
+            $('#userPriceEditOrAdd').children().remove();
+
+            $.get('/Budget/GetSkew', { ProjectName: selectionProj, FormFactor: selectionForm }, function (BoardSkew) {
+                $.each(BoardSkew, function (index, value) {
+                    $("#userSkewSelect").append(`<option value='${value}'>${value}</option>`);
+                });
+            });
+        };
+
+        function SkewSelect () {
+
+            let selectionProj = $('#userProjectNameSelect').val();
+            let selectionForm = $('#userFormFactorSelect').val();
+            let selectionSkew = $('#userSkewSelect').val();
+
+            $('#userPriceEditOrAdd').children().remove();
+
+            $.get('/Budget/GetProductPrice', { ProjectName: selectionProj, FormFactor: selectionForm, Skew: selectionSkew }, function (BoardSkew) {
+                $.each(BoardSkew, function (index, value) {
+                    $("#userPriceEditOrAdd").append(`<option value='${value}' selected="selected">$${value}</option>`);
+                });
+            });
+
+        }
+
+        function PackageSelect () {
+
+            let selectionProj = $('#userProjectNameSelect').val();
+            let selectionPackage = $('#userPackageNumberSelect').val();
+            
+            $('#userMiniSkewSelect').find('option:not(:first)').remove();
+            $('#userSiFLVSelect').find('option:not(:first)').remove();
+
+            $('#userPriceEditOrAdd').children().remove();
+
+            $.get('/Budget/GetSiFLV', { ProjectName: selectionProj, PackageNumber: selectionPackage }, function (SiFLV) {
+                $.each(SiFLV, function (index, value) {
+                    $("#userSiFLVSelect").append(`<option value='${value}'">${value}</option>`);
+                });
+            });
+
+        };
+        
+        function SiFLVSelect () {
+
+            let selectionProj = $('#userProjectNameSelect').val();
+            let selectionPackage = $('#userPackageNumberSelect').val();
+            let selectionSiFLV = $('#userSiFLVSelect').val();
+
+            $('#userMiniSkewSelect').find('option:not(:first)').remove();
+
+            $('#userPriceEditOrAdd').children().remove();
+
+            $.get('/Budget/GetSiComment', { ProjectName: selectionProj, PackageNumber: selectionPackage, SiFLV: selectionSiFLV }, function (SiComment) {
+                $.each(SiComment, function (index, value) {
+                    $("#userCommentEditOrAdd").append(`<option value='${value}' selected="selected">${value}</option>`);
+                });
+            });
+
+            $.get('/Budget/GetPackagePrice', {
+                ProjectName: selectionProj, PackageNumber: selectionPackage,
+                SiFLV: selectionSiFLV }, function (SiPrice) {
+                $.each(SiPrice, function (index, value) {
+                    $("#userPriceEditOrAdd").append(`<option value='${value}' selected="selected">$${value}</option>`);
+                });
+            });
+        };
+
+        let resultENG = "";
+        let resultSI = "";
+        let resultPRO = "";
+        let SubTotal = 0;
+        let LineNumber = 0;
+
+        $('.userAddButton').click(function () {
+
+            let CatagorySelect = $('#userCategorySelect').val();
+            let ProjectNameInput = $('#userProjectNameSelect').val();
+            let RequestorInput = $('#userRequestorSelect').val();
+            let GroupAndTeamInput = $('#userGroupSelect').val();
+            let QuantityInput = $('#userQuantityEditOrAdd').val();
+            let QuantityOtherInput = $('#userQuantityOtherEditOrAdd').val();
+            let ItemJustificationInput = $('#userItemJustificationEditOrAdd').val();
+            let PriceInput = $('#userPriceEditOrAdd').val();
+            let TotalPrice = PriceInput * QuantityInput;
+
+            if (ProjectNameInput == 'Select' || ProjectNameInput == null) {
+                    alert('Please select Project Name!');
+                    return;
+            } else if (RequestorInput == 'Select' || RequestorInput == null) {
+                    alert('Please select Customer!');
+                    return;
+            } else if (GroupAndTeamInput == 'Select' || GroupAndTeamInput == null) {
+                    alert('Please select Group And Team!');
+                    return;
+            } else if (QuantityInput == '' || QuantityInput == null) {
+                    alert('Please Enter Quantity!');
+                    return;
+            } else if (ItemJustificationInput == '' || ItemJustificationInput == null) {
+                    alert('Please Enter Justification!');
+                    return;
+            }
+
+            if (CatagorySelect == "Eng Board") {
+
+                let BoardNameInput = $('#userBoardNameSelect').val();
+                let StepInput = $('#EngStepSelect').val();
+                let SetupInput = $('#userSetupSelect').val();
+
+                document.getElementById('EngStepSelect').value = 'Select';
+                document.getElementById('userQuantityEditOrAdd').value = '';
+                document.getElementById('userQuantityOtherEditOrAdd').value = '';
+
+                if (BoardNameInput == 'Select' || BoardNameInput == null) {
+                    alert('Please select Board Name!');
+                    return;
+                } else if (SetupInput == 'Select' || SetupInput == null) {
+                    alert('Please select Setup!');
+                    return;
+                } else if (StepInput == 'Select' || StepInput == null) {
+                    alert('Please select Si Step!');
+                    return;
+                }
+                else {
+                    //Add new value to DB
+                    let input = "'";
+                    input += ProjectNameInput;
+                    input += "','";
+                    input += RequestorInput;
+                    input += "','";
+
+                    $.get('/Budget/GetEngPartNumber', { ProjectName: ProjectNameInput, BoardName: BoardNameInput, Setup: SetupInput }, function (data) {
+                    
+                        input += data;
+                        input += "','";
+                        input += BoardNameInput;
+                        input += "','";
+                        input += GroupAndTeamInput;
+                        input += "','";
+                        input += QuantityInput;
+                        input += "','";
+                        input += QuantityOtherInput;
+                        input += "','";
+                        input += ItemJustificationInput;
+                        input += "','";
+                        input += SetupInput;
+                        input += "','";
+                        input += StepInput;
+                        input += "'";
+
+
+
+                        $("#userShoppingCartENG").append(`<tr id="${LineNumber}">
+                                                    <td class="td">${ProjectNameInput}</td>
+                                                            <td class="td">${SetupInput}</td>
+                                            <td class="td">${BoardNameInput}</td>
+                                            <td class="td">${SetupInput}</td>
+                                                    <td class="td">${StepInput}</td>
+                                            <td class="td">${QuantityInput}</td>
+                                            <td class="td">${QuantityOtherInput}</td>
+                                            <td class="td">${TotalPrice}</td>
+                                     <td class="td">
+                                                             <button class="btn btn-primary userDeleteButton" type="button" onclick="Delete(${LineNumber},${TotalPrice})">X</button>
+                            </td>   
+                                     <td class="td">
+                                                             <button class="btn btn-primary userEditButton" type="button" onclick="Edit(${LineNumber})">Edit</button>
+                            </td>   
+                                                                            </tr>
+                            `);
+
+                        SubTotal += TotalPrice;
+                        LineNumber++;
+
+                        //update the total price
+                        $('#TotalPriceOld').remove();
+                        $("#TotalPriceNew").append(`<h2 class ="col-sm-2" id="TotalPriceOld">$${SubTotal}</h2>`);
+
+                        resultENG += input;
+                        //seperate 2 items in the table
+                        resultENG += "),(";
+
+                    });
+                }
+
+            }
+            else if (CatagorySelect == "Product Board") {
+
+                let FormFactorInput = $('#userFormFactorSelect').val();
+                let SkewInput = $('#userSkewSelect').val();
+
+                if (FormFactorInput == 'Select' || FormFactorInput == null) {
+                    alert('Please select Form Factor!');
+                    return;
+                } else if (SkewInput == 'Select' || SkewInput == null) {
+                    alert('Please select Skew!');
+                    return;
+                }
+                else {
+                    //Add new value to DB
+                    let input = "'";
+                    input += ProjectNameInput;
+                    input += "','";
+                    input += RequestorInput;
+                    input += "','";
+
+                    $.get('/Budget/GetProductPartNumber', { ProjectName: ProjectNameInput, FormFactor: FormFactorInput, Skew: SkewInput }, function (data) {
+
+                        input += data;
+                        input += "','";
+                        input += FormFactorInput;
+                        input += "','";
+                        input += GroupAndTeamInput;
+                        input += "','";
+                        input += QuantityInput;
+                        input += "','";
+                        input += QuantityOtherInput;
+                        input += "','";
+                        input += ItemJustificationInput;
+                        input += "','";
+                        input += SkewInput;
+                        input += "'";
+
+
+                        $("#userShoppingCartPRO").append(`<tr id="${LineNumber}">
+                                                                    <td class="td">${ProjectNameInput}</td>
+                                                            <td class="td">${FormFactorInput}</td>
+                                                            <td class="td">${SkewInput}</td>
+                                                            <td class="td">${QuantityInput}</td>
+                                                            <td class="td">${QuantityOtherInput}</td>
+                                                                    <td class="td">${TotalPrice}</td>
+                                             <td class="td">
+                                     <button class="btn btn-primary userDeleteButton" type="button" onclick="Delete(${LineNumber},${TotalPrice})">X</button>
+                                    </td>   
+                                     <td class="td">
+                                                             <button class="btn btn-primary userEditButton" type="button" onclick="Edit(${LineNumber})">Edit</button>
+                            </td>   
+                                                                                    </tr>
+                                    `);
+
+                        SubTotal += TotalPrice;
+                        LineNumber++;
+
+                        //update the total price
+                        $('#TotalPriceOld').remove();
+                        $("#TotalPriceNew").append(`<h2 class ="col-sm-2" id="TotalPriceOld">$${SubTotal}</h2>`);
+
+                        resultPRO += input;
+                        //seperate 2 items in the table
+                        resultPRO += "),(";
+
+                    });
+                }
+
+            }
+            else if (CatagorySelect == "Si Package") {
+
+                let PackageNumberInput = $('#userPackageNumberSelect').val();
+                let MoldInput = $('#SiMoldTypeSelect').val();
+                let BlindInput = $('#SiBlindSelect').val();
+                let SiFLVInput = $('#userSiFLVSelect').val();
+                let MiniSkewInput = $('#SiMiniSkewSelect').val();
+                let StepInput = $('#SiStepSelect').val();
+                let RecipientInput = $('#userRecipientNameEditOrAdd').val();
+                let DeliveryAddressInput = $('#userDeliveryAddressEditOrAdd').val();
+                let ETDDateInput = $('#userETDDateEditOrAdd').val();
+
+                if (PackageNumberInput == 'Select' || PackageNumberInput == null) {
+                    alert('Please select Package Number!');
+                    return;
+                } else if (MoldInput == 'Select' || MoldInput == null) {
+                    alert('Please select Mold Type!');
+                    return;
+                } else if (BlindInput == 'Select' || BlindInput == null) {
+                    alert('Please select Blind or Tested!');
+                    return;
+                } else if (SiFLVInput == 'Select' || SiFLVInput == null) {
+                    alert('Please select Si FLV!');
+                    return;
+                } else if (MiniSkewInput == 'Select' || MiniSkewInput == null) {
+                    alert('Please select Mini Skew!');
+                    return;
+                } else if (StepInput == 'Select' || StepInput == null) {
+                    alert('Please select Step!');
+                    return;
+                }
+                else {
+                    //Add new value to DB
+                    let input = "'";
+                    input += ProjectNameInput;
+                    input += "','";
+                    input += RequestorInput;
+                    input += "','";
+
+                    $.get('/Budget/GetSiPartNumber', { ProjectName: ProjectNameInput, PackageNumber: PackageNumberInput,
+                        SiFLV: SiFLVInput, MiniSkew: MiniSkewInput }, function (data) {
+
+                        input += data;
+                        input += "','";
+                        input += PackageNumberInput;
+                        input += "','";
+                        input += GroupAndTeamInput;
+                        input += "','";
+                        input += QuantityInput;
+                        input += "','";
+                        input += QuantityOtherInput;
+                        input += "','";
+                        input += ItemJustificationInput;
+                        input += "','";
+                        input += MoldInput;
+                        input += "','";
+                        input += BlindInput;
+                        input += "','";
+                        input += SiFLVInput;
+                        input += "','";
+                        input += MiniSkewInput;
+                        input += "','";
+                        input += StepInput;
+                        input += "','";
+                        input += RecipientInput;
+                        input += "','";
+                        input += DeliveryAddressInput;
+                        input += "','";
+                        input += ETDDateInput;
+                        input += "'";
+
+
+                        $("#userShoppingCartSI").append(`<tr id="${LineNumber}">
+                                                                            <td class="td">${ProjectNameInput}</td>
+                                                                                    <td class="td">${PackageNumberInput}</td>
+                                                                            <td class="td">${MoldInput}</td>
+                                                                            <td class="td">${BlindInput}</td>
+                                                                                    <td class="td">${SiFLVInput}</td>
+                                                                            <td class="td">${MiniSkewInput}</td>
+                                                                                    <td class="td">${StepInput}</td>
+                                                                            <td class="td">${QuantityInput}</td>
+                                                                            <td class="td">${QuantityOtherInput}</td>
+                                                                            <td class="td" id="price">${TotalPrice}</td>
+                                     <td class="td">
+                             <button class="btn btn-primary userDeleteButton" type="button" onclick="Delete(${LineNumber},${TotalPrice})">X</button>
+                            </td>      
+                                     <td class="td">
+                                                             <button class="btn btn-primary userEditButton" type="button" onclick="Edit(${LineNumber})">Edit</button>
+                            </td>   
+                                                                            </tr>
+                            `);
+
+                        SubTotal += TotalPrice;
+                        LineNumber++;
+
+                        //update the total price
+                        $('#TotalPriceOld').remove();
+                        $("#TotalPriceNew").append(`<h2 class ="col-sm-2" id="TotalPriceOld">$${SubTotal}</h2>`);
+
+                        resultSI += input;
+                        //seperate 2 items in the table
+                        resultSI += "),(";
+
+                    });
+                }
+            
+            }
+        });
+
+        $('.userSubmitButton').click(function () {
+
+            if (resultENG == "" && resultSI == "" && resultPRO == ""){
+                alert("Please Add Items to The Shopping Cart");
+                return;
+            }
+            
+            let DB = "";
+
+            if (resultSI != "") {
+
+                DB = "BudgetItemsSI";
+
+                $.get('/Budget/AddNewValueToDB', { newValue: resultSI, table: DB, submit: true }, function (data) {
+                    //Clear selection:
+                    alert("Submit Successful");
+                    location.reload();
+                });
+
+            }
+            
+            if (resultPRO != "") {
+
+                DB = "BudgetItemsPRO";
+
+                $.get('/Budget/AddNewValueToDB', { newValue: resultPRO, table: DB, submit: true }, function (data) {
+                    //Clear selection:
+                    alert("Submit Successful");
+                    location.reload();
+                });
+
+            }
+            
+            if (resultENG != "") {
+
+                DB = "BudgetItemsENG";
+
+                $.get('/Budget/AddNewValueToDB', { newValue: resultENG, table: DB, submit: true }, function (data) {
+                    //Clear selection:
+                    alert("Submit Successful");
+                    location.reload();
+                });
+
+            }
+
+           
+        
+        });
+
+        function Delete (ID,Price){
+
+
+            $('#'+ID).remove();
+
+            SubTotal -= Price;
+
+                   $('#TotalPriceOld').remove();
+                        $("#TotalPriceNew").append(`<h2 class ="col-sm-2" id="TotalPriceOld">$${SubTotal}</h2>`);
+
+        }
+
+        function Edit (LineNumber) {
+
+            let Children = document.getElementById(LineNumber).children;
+            let length = Children.length - 2;//-2 duo to the buttons
+
+
+            $.each(Children, function (colum, value) {
+                if (colum != length) {
+                    value.remove();
+                }
+                });
+
+
+            /*
+                <div class="col-md-3">
+                    <input class="form-control RequestorAddOrEdit" id="RequestorFirstNameEditOrAdd" />
+                </div>
+                */
+        }
+
+        function LoadSi () {
+            $("#InsertNew").append(`
+
+                                                                <div class="row">
+                                                <div class="col-auto">
+                                                    <p> <b> Package Number </b> </p>
+                                                </div>
+                                                <div class="col-auto" id="PackageNumberReset">
+                                                            <select class="form-control userSelectPackage" id="userPackageNumberSelect" onchange="PackageSelect()"> <option> Select </option> </select>
+                                                </div>
+                                            </div>
+                                                    <br /><div class="row">
+                                                <div class="col-auto">
+                                                    <p> <b> Si FLV </b> </p>
+                                                </div>
+                                                <div class="col-auto" id="SiFLVReset">
+                                                            <select class="form-control userSelectSiFLV" id="userSiFLVSelect" onchange="SiFLVSelect()"> <option> Select </option> </select>
+                                                </div>
+                                            </div>
+                                                    <br /><div class="row">
+                                                <div class="col-auto">
+                                                    <p> <b> Mini SKU </b> </p>
+                                                </div>
+                                                        <div class="col-auto" id="MiniSkewReset">
+                                                <select class="form-control SiAddOrEdit" id="SiMiniSkewSelect">
+                                                <option> Select </option>
+                                                        <option> No mini skew </option>
+                                                <option> TT </option>
+                                                <option> SS </option>
+                                                <option> FF </option>
+                                                <option> FSTT </option>
+                                                <option> SFTT </option>
+                                                </select> </div>
+                                            </div>
+                                                    <br />
+                                        <div class="row">
+                                        <div class="col-auto">
+                                            <p> <b> Step </b> </p>
+                                        </div>
+                                                 <div class="col-auto">
+                                            <select class="form-control SiAddOrEdit" id="SiStepSelect">
+                                                <option> Select </option>
+                                                <option> STC </option>
+                                                <option> A0 </option>
+                                                <option> B0 </option>
+                                                <option> C0 </option>
+                                                </select>
+                                        </div>
+                                        </div>
+                                        <br />
+                                <div class="row">
+                                <div class="col-auto">
+                                    <p> <b> Mold Type </b> </p>
+                                </div>
+                                         <div class="col-auto">
+                                    <select class="form-control SiAddOrEdit" id="SiMoldTypeSelect">
+                                        <option> Select </option>
+                                        <option> Molded </option>
+                                        <option> UnMolded </option>
+                                        </select>
+                                </div>
+                                </div>
+                                <br />
+                                        <div class="row">
+                                        <div class="col-auto">
+                                            <p> <b> Blind Or Tested </b> </p>
+                                        </div>
+                                                                  <div class="col-auto">
+                                    <select class="form-control SiAddOrEdit" id="SiBlindSelect">
+                                        <option> Select </option>
+                                        <option> Blind </option>
+                                        <option> Tested </option>
+                                    </select>
+                                </div>
+                                        </div>
+            <br />
+                    <div class="row">
+                <div class="col-auto">
+                    <p> <b> Comment </b> </p>
+                </div>
+                        <div class="col-auto">
+                    <select class="form-control userSelectComment" disabled id="userCommentEditOrAdd"> <option> --- </option> </select>
+                </div>
+            </div>
+
+                                                <br />
+                        `)
+
+                        $("#justification").append(`
+                            <br />
+
+                        <div class="row">
+        <div class="col-auto">
+            <p> <b> Recipient Name </b> </p>
+        </div>
+        <div class="col-auto">
+            <input class="form-control userAddOrEdit" id="userRecipientNameEditOrAdd" />
+        </div>
+    </div>
+    <br />
+
+                        <div class="row">
+        <div class="col-auto">
+                    <p> <b> Delivery Address </b> </p>
+        </div>
+        <div class="col-auto">
+            <input class="form-control userAddOrEdit" id="userDeliveryAddressEditOrAdd" />
+        </div>
+    </div>
+    <br />
+
+                        <div class="row">
+        <div class="col-auto">
+            <p> <b> ETD Date </b> </p>
+        </div>
+        <div class="col-auto">
+            <input class="form-control userAddOrEdit" id="userETDDateEditOrAdd" />
+        </div>
+    </div>
+                        
+                        
+                        
+                        `)
+
+        }
+
+        function LoadPro () {
+             $("#InsertNew").append(`
+                                                <div class="row">
+                                <div class="col-auto">
+                                    <p> <b> Form Factor </b> </p>
+                                </div>
+                                <div class="col-auto" id="FormFactorReset">
+                                            <select class="form-control userSelectFormFactor" id="userFormFactorSelect" onchange="FormFactorSelect()"> <option> Select </option> </select>
+                                </div>
+                            </div>
+                            <br />
+                            <!-- For category -->
+                            <div class="row">
+                                <div class="col-auto">
+                                    <p> <b> Skew </b> </p>
+                                </div>
+                                <div class="col-auto" id="SkewReset">
+                                                            <select class="form-control userSelectSkew" id="userSkewSelect" onchange="SkewSelect()""> <option> Select </option> </select>
+                                </div>
+                            </div>
+                                        <br />
+                                `)
+
+        }
+
+        function LoadEng(){
+
+            $("#InsertNew").append(`
+
+                    <!-- For category -->
+                    <div class="row">
+                        <div class="col-auto">
+                                    <p> <b> Setup </b> </p>
+                        </div>
+                        <div class="col-auto" id="BoardSetupReset">
+                                            <select class="form-control userSelectSetup" id="userSetupSelect" onchange="SetupSelect()"> <option> Select </option> </select>
+                        </div>
+                    </div>
+
+                                                <br />
+                                        <div class="row">
+                        <div class="col-auto">
+                            <p> <b> Item Name </b> </p>
+                        </div>
+                        <div class="col-auto" id="BoardNameReset">
+                                            <select class="form-control userSelectName" id="userBoardNameSelect" onchange="BoradNameSelect()"> <option> Select </option> </select>
+                        </div>
+                    </div>
+                    <br />
+                     <div class="row">
+                <div class="col-auto">
+                    <p> <b> P/N </b> </p>
+                </div>
+                <div class="col-auto">
+                    <select class="form-control userSelectPart" disabled id="userPartEditOrAdd"> <option> --- </option> </select>
+                </div>
+            </div>
+            <br />
+                    <div class="row">
+                <div class="col-auto">
+                    <p> <b> Comment </b> </p>
+                </div>
+                        <div class="col-auto">
+                    <select class="form-control userSelectComment" disabled id="userCommentEditOrAdd"> <option> --- </option> </select>
+                </div>
+            </div>
+             <br />
+
+                                                <div class="row">
+                                                <div class="col-auto">
+                                                    <p> <b> Si Step </b> </p>
+                                                </div>
+                                                                  <div class="col-auto">
+                                            <select class="form-control EngAddOrEdit" id="EngStepSelect">
+                                                <option> Select </option>
+                                                <option> N/A </option>
+                                                <option> For Socket </option>
+                                                <option> Depop </option>
+                                                <option> BNJ </option>
+                                                <option> STC A0 </option>
+                                            </select>
+                                        </div>
+                                                </div>
+                                                <br />
+                                `)
+        }
+
+    </script>
+}

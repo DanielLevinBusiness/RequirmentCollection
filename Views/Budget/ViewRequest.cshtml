@@ -1,0 +1,350 @@
+﻿
+<div id="ViewRequestContainer">
+    <h2 id="insert"></h2>
+    <div class="col-md">
+        <a class="btn btn-primary ExcelButton" asp-area="" asp-controller="Budget" asp-action="ExportToXcl">Export to excel</a>
+    </div>
+    <div class="row">
+            <div class="col-sm-3">
+                <p> <b> Filter By </b> </p>
+            </div>
+            <div class="col-md-3">
+                <select class="form-control userSelectFilter" id="userFilterSelect" onchange="FilterSelect()"> 
+                    <option> Select </option>
+                    <option> Customer Name </option>
+                    <option> Project Name </option>
+                    <option> Category Type </option>
+                </select>
+            </div>
+        </div>
+        
+    <div class="row" id="InsertFilter">
+         
+    </div>
+
+     <div class="row" id="InsertTable">
+         
+    </div>
+
+</div>
+
+@section scripts {
+
+<script type="text/javascript">
+
+    var Si = 12;
+    var Pro = 8;
+    var Eng = 9;
+
+        function FilterSelect()
+        {
+            let FilterSelect = $('#userFilterSelect').val();
+
+            $('#InsertFilter').children().remove();
+            $('#InsertTable').children().remove();
+            
+                QtyPointer = 0;
+                QtyCount = 0;
+
+            if (FilterSelect != "Select")
+            {
+
+                $("#InsertFilter").append(`
+                    <div class="col-sm-3">
+                        <p> <b> ${FilterSelect} </b> </p>
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-control userSelectFilter" id="userSecondFilterSelect" onchange="LoadTable()"> 
+                        </select>
+                 </div>
+                `);
+
+                if (FilterSelect == "Customer Name")
+                {
+                    $('#userSecondFilterSelect').children().remove();
+
+                    $("#userSecondFilterSelect").append(`<option> Select </option>`);
+
+                     $.get('/Budget/GetRequestores', {}, function (Requestores) {
+                        $.each(Requestores, function (index, value) {
+                            $("#userSecondFilterSelect").append(`<option value='${value}'>${value}</option>`);
+                        });
+                    });
+
+                } else if (FilterSelect == "Project Name")
+                {
+                    $('#userSecondFilterSelect').children().remove();
+
+                    $("#userSecondFilterSelect").append(`<option> Select </option>`);
+
+                    $.get('/Budget/GetProjectNames', { DBname: "EngBoards" }, function (ProjectNames) {
+                            $.each(ProjectNames, function (index, value) {
+                                $("#userSecondFilterSelect").append(`<option value='${value}'>${value}</option>`);
+                            });
+                        });
+                        $.get('/Budget/GetProjectNames', { DBname: "SiPackage" }, function (ProjectNames) {
+                            $.each(ProjectNames, function (index, value) {
+                                $("#userSecondFilterSelect").append(`<option value='${value}'>${value}</option>`);
+                            });
+                        });$.get('/Budget/GetProjectNames', { DBname: "ProductBoards" }, function (ProjectNames) {
+                            $.each(ProjectNames, function (index, value) {
+                                $("#userSecondFilterSelect").append(`<option value='${value}'>${value}</option>`);
+                            });
+                        });
+                
+                } else if (FilterSelect == "Category Type")
+                {
+                    $('#userSecondFilterSelect').children().remove();
+
+                    $("#userSecondFilterSelect").append(`
+                        <option> Select </option>
+                        <option> Si Package </option>
+                        <option> Product Board </option>
+                        <option> Eng Board </option>
+                    `);
+
+                }
+            }
+        }
+
+        function LoadTable()
+        {
+            let FilterSelect = $('#userFilterSelect').val();
+            let SecondFilterSelect = $('#userSecondFilterSelect').val();
+
+            $('#InsertTable').children().remove();
+
+            
+                QtyPointer = 0;
+                QtyCount = 0;
+
+            if (FilterSelect == "Project Name")
+            {
+
+                SiTable();
+                ProTable();
+                EngTable();
+
+                BudgetItem('/Budget/GetSiBudgetItem', "BudgetItemsSI", Si, "#userShoppingCartSI", "InsertDataSI", "where ProjectName = ", "'" + SecondFilterSelect + "'");
+
+                BudgetItem('/Budget/GetProBudgetItem', "BudgetItemsPRO", Pro, "#userShoppingCartPRO", "InsertDataPRO", "where ProjectName = ", "'" + SecondFilterSelect + "'");
+
+                BudgetItem('/Budget/GetEngBudgetItem', "BudgetItemsENG", Eng, "#userShoppingCartENG", "InsertDataENG", "where ProjectName = ", "'" + SecondFilterSelect + "'");
+
+                QtyPointer = 0;
+                QtyCount = 0;
+
+            } else if (FilterSelect == "Customer Name") {
+
+
+                SiTable();
+                ProTable();
+                EngTable();
+
+                BudgetItem('/Budget/GetSiBudgetItem', "BudgetItemsSI", Si, "#userShoppingCartSI", "InsertDataSI", "where Requestor = ", "'" + SecondFilterSelect + "'");
+
+                BudgetItem('/Budget/GetProBudgetItem', "BudgetItemsPRO", Pro, "#userShoppingCartPRO", "InsertDataPRO", "where Requestor = ", "'" + SecondFilterSelect + "'");
+
+                BudgetItem('/Budget/GetEngBudgetItem', "BudgetItemsENG", Eng, "#userShoppingCartENG", "InsertDataENG", "where Requestor = ", "'" + SecondFilterSelect + "'");
+
+                QtyPointer = 0;
+                QtyCount = 0;
+            }
+            else 
+            {
+
+                if (SecondFilterSelect == "Si Package")
+                {
+
+                    SiTable();
+
+                    BudgetItem('/Budget/GetSiBudgetItem', "BudgetItemsSI", Si, "#userShoppingCartSI", "InsertDataSI", "", "");
+                    
+                    QtyPointer = 0;
+                    QtyCount = 0;
+
+                } else if (SecondFilterSelect == "Product Board")
+                {
+                    
+                    ProTable();
+
+                    BudgetItem('/Budget/GetProBudgetItem', "BudgetItemsPRO", Pro, "#userShoppingCartPRO", "InsertDataPRO", "", "");
+                    
+                    QtyPointer = 0;
+                    QtyCount = 0;
+                
+                } else if (SecondFilterSelect == "Eng Board")
+                {
+
+                    EngTable();
+
+                    BudgetItem('/Budget/GetEngBudgetItem', "BudgetItemsENG", Eng, "#userShoppingCartENG", "InsertDataENG", "", "");
+                    
+                    QtyPointer = 0;
+                    QtyCount = 0;
+                
+                }
+
+            }
+        
+        }
+
+        function SiTable () {
+        
+            $("#InsertTable").append(`
+                    <h3>Si packages</h3>
+                                <table class="table" id="userShoppingCartSI">
+                                    <tr>
+                                        <th class="th">Project</th>
+                                                            <th class="th">Requestor</th>
+                                                            <th class="th">P/N</th>
+                                        <th class="th">Package Number</th>
+                                        <th class="th">Group And Team</th>
+                                                                                    <th class="th">Quantity for pre-BU</th>
+                                                        <th class="th">Quantity for post-BU</th>
+                                        <th class="th">Item Justification</th>
+                                        <th class="th">Mold Type</th>
+                                        <th class="th">Blind or Tested</th>
+                                        <th class="th">SiFLV</th>
+                                        <th class="th">Mini SKU</th>
+                                        <th class="th">Step</th>
+                                                                                    <th class="th">Approved Qty pre-BU</th>
+                                                                                    <th class="th">Approved Qty post-BU</th>
+                                                                                    <th class="th">APO#</th>
+                                                                                    <th class="th">ETA</th>
+                                    </tr>
+                    </table>
+                    `);
+        
+        }
+
+        function EngTable () {
+        
+        $("#InsertTable").append(`
+                                    <h2>Eng Boards</h2>
+                            <table class="table" id="userShoppingCartENG">
+                                <tr>
+                                                                            <th class="th">Project</th>
+                                                                                    <th class="th">Requestor</th>
+                                                                                    <th class="th">P/N</th>
+                                                                                    <th class="th">Board Name</th>
+                                                                                    <th class="th">Group And Team</th>
+                                                                                    <th class="th">Quantity for pre-BU</th>
+                                                        <th class="th">Quantity for post-BU</th>
+                                                                    <th class="th">Item Justification</th>
+                                                                    <th class="th">Setup</th>
+                                                                    <th class="th">Si Step</th>
+                                                                                    <th class="th">Approved Qty pre-BU</th>
+                                                                                            <th class="th">Approved Qty post-BU</th>
+                                                                                            <th class="th">APO#</th>
+                                                                                            <th class="th">ETA</th>
+                                                    </tr>
+                            </table>
+                            `);
+
+
+        }
+
+        function ProTable () {
+        
+            $("#InsertTable").append(`
+                            <h3>Product Boards</h3>
+                            <table class="table" id="userShoppingCartPRO">
+                                <tr>
+                                                                                            <th class="th">Project</th>
+                                                                    <th class="th">Requestor</th>
+                                                                    <th class="th">P/N</th>
+                                                                                    <th class="th">Form Factor</th>
+                                                                                    <th class="th">Group And Team</th>
+                                                                                    <th class="th">Quantity for pre-BU</th>
+                                                        <th class="th">Quantity for post-BU</th>
+                                                <th class="th">Item Justification</th>
+                                                                                    <th class="th">Skew</th>
+                                                                                    <th class="th">Approved Qty pre-BU</th>
+                                                                                            <th class="th">Approved Qty post-BU</th>
+                                                                                            <th class="th">APO#</th>
+                                                                                            <th class="th">ETA</th>
+                                                            </tr>
+                            </table>
+                            `);
+
+        }
+
+        var QtyPointer = 0;
+
+        function BudgetItem (Get ,DBname, LoopInt, ShoppingCartName, InsertDataName, SqlFilter, SecondFilterSelect) {
+
+            $.get(Get , { DBname: DBname, Requirment: SqlFilter + SecondFilterSelect }, function (BudgetItem) {
+
+                $(ShoppingCartName).append(`<tr id="${InsertDataName}">`);
+                
+                var i = 0;
+                var FirstLoop = true;
+
+                $.each(BudgetItem, function (index, value) {
+
+                    $("#" + InsertDataName).append(`<td class="td">${value}</td>`);
+
+                    if (i != 0 && i % LoopInt == 0 && FirstLoop) {
+
+                        $("#" + InsertDataName).append(`<td class="td" id="${QtyPointer}"></td>`);
+                        QtyPointer++;
+                        $("#" + InsertDataName).append(`<td class="td" id="${QtyPointer}"></td>`);
+                        QtyPointer++;
+                        $("#" + InsertDataName).append(`<td class="td" id="${QtyPointer}"></td>`);
+                        QtyPointer++;
+                        $("#" + InsertDataName).append(`<td class="td" id="${QtyPointer}"></td>`);
+                        QtyPointer++;
+
+
+                        $(ShoppingCartName).append(`</tr>`);
+                        const remove = document.getElementById(InsertDataName);
+                        remove.removeAttribute('id');
+                        $(ShoppingCartName).append(`<tr id="${InsertDataName}">`);
+                        FirstLoop = false;
+                        i = 0;
+                    }
+
+                    if (i != 0 && i % (LoopInt + 1) == 0 && !FirstLoop) {
+
+                        $("#" + InsertDataName).append(`<td class="td" id="${QtyPointer}"></td>`);
+                        QtyPointer++;
+                        $("#" + InsertDataName).append(`<td class="td" id="${QtyPointer}"></td>`);
+                        QtyPointer++;
+                        $("#" + InsertDataName).append(`<td class="td" id="${QtyPointer}"></td>`);
+                        QtyPointer++;
+                        $("#" + InsertDataName).append(`<td class="td" id="${QtyPointer}"></td>`);
+                        QtyPointer++;
+                        
+
+                        $(ShoppingCartName).append(`</tr>`);
+                        const remove = document.getElementById(InsertDataName);
+                        remove.removeAttribute('id');
+                        $(ShoppingCartName).append(`<tr id="${InsertDataName}">`);
+                    }
+
+                    i++;
+
+                });
+
+                LoadApproved(DBname + "App", InsertDataName, SqlFilter + SecondFilterSelect);
+            });
+        }
+
+        var QtyCount = 0;
+
+        function LoadApproved (DBname, InsertDataName, Requirment) {
+
+            $.get('/Budget/GetApproved', { DBname: DBname, Requirment : Requirment}, function (Attach) {
+                $.each(Attach, function (index, value) {
+
+                        $("#" + QtyCount).append(`<td class="td">${value}</td>`);
+                        QtyCount++;
+                    
+                });
+            })
+
+        }
+
+    </script>
+}
